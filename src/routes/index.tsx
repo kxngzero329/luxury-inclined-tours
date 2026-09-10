@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowDown, ArrowRight, Check, ChevronLeft, ChevronRight, Menu, Quote, ShieldCheck, Sparkles, Plane, X } from "lucide-react";
-import { useEffect, useState, type ButtonHTMLAttributes, type FormEvent } from "react";
+import { useEffect, useState, type ButtonHTMLAttributes } from "react";
 import heroImage from "../assets/luxury-vineyard-hero.jpg";
 import winelandsImage from "../assets/cape-winelands.jpg";
 import capePointImage from "../assets/cape-point.jpg";
@@ -20,10 +20,19 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { tone?: "gold" | "outline" | "light" };
+type Tone = "gold" | "outline" | "light";
+const btnBase = "inline-flex min-h-12 items-center justify-center gap-3 rounded-sm border px-6 text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors duration-300";
+const btnTones: Record<Tone, string> = {
+  gold: "border-gold bg-gold text-forest hover:bg-ivory hover:border-ivory",
+  light: "border-ivory text-ivory hover:bg-ivory hover:text-forest",
+  outline: "border-gold text-gold hover:bg-gold hover:text-forest",
+};
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { tone?: Tone };
 function Button({ tone = "gold", className = "", ...props }: ButtonProps) {
-  const styles = tone === "gold" ? "border-gold bg-gold text-forest hover:bg-ivory hover:border-ivory" : tone === "light" ? "border-ivory text-ivory hover:bg-ivory hover:text-forest" : "border-gold text-gold hover:bg-gold hover:text-forest";
-  return <button className={`inline-flex min-h-12 items-center justify-center gap-3 rounded-sm border px-6 text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors duration-300 ${styles} ${className}`} {...props} />;
+  return <button className={`${btnBase} ${btnTones[tone]} ${className}`} {...props} />;
+}
+function BookLink({ tone = "gold", className = "", children }: { tone?: Tone; className?: string; children: React.ReactNode }) {
+  return <Link to="/booking" className={`${btnBase} ${btnTones[tone]} ${className}`}>{children}</Link>;
 }
 
 const experiences = [
@@ -36,8 +45,6 @@ const experiences = [
 
 function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [enquiryOpen, setEnquiryOpen] = useState(false);
-  const [sent, setSent] = useState(false);
   const [quoteIndex, setQuoteIndex] = useState(0);
   const [scrolled, setScrolled] = useState(false);
 
@@ -49,7 +56,6 @@ function Index() {
   }, []);
 
   const top = () => { window.scrollTo({ top: 0, behavior: "smooth" }); setMenuOpen(false); };
-  const submit = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); setSent(true); };
   const quotes = [
     ["Every detail was considered, from the estate selection to the effortless timing. It felt entirely our own.", "Amelia & James", "London, United Kingdom"],
     ["Professional, discreet and exceptionally knowledgeable. Our Cape Peninsula day was the highlight of our stay.", "The Martin Family", "Toronto, Canada"],
@@ -65,7 +71,7 @@ function Index() {
         </button>
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Main navigation">
           {["Experiences", "Destinations", "Our Story", "Fleet"].map((item) => <button key={item} onClick={top} className="text-[10px] font-medium uppercase tracking-[0.2em] transition-colors hover:text-gold">{item}</button>)}
-          <Button tone="outline" onClick={() => setEnquiryOpen(true)}>Plan your journey</Button>
+          <BookLink tone="outline">Plan your journey</BookLink>
         </nav>
         <button onClick={() => setMenuOpen(!menuOpen)} className="grid size-11 place-items-center lg:hidden" aria-label="Toggle menu">{menuOpen ? <X size={22}/> : <Menu size={22}/>}</button>
       </div>
@@ -77,12 +83,11 @@ function Index() {
       <div className="absolute inset-0 bg-gradient-to-r from-charcoal/80 via-charcoal/40 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-transparent to-charcoal/25" />
       <div className="relative mx-auto w-full max-w-[1440px] px-6 pb-16 pt-40 lg:px-12 lg:pb-20">
-        <p className="reveal-up mb-5 text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">Private travel · Western Cape</p>
         <h1 className="reveal-up max-w-4xl text-6xl font-medium leading-[0.88] sm:text-7xl lg:text-[108px]">Travel Beyond<br/><em className="font-normal">Ordinary.</em></h1>
         <p className="reveal-up mt-7 max-w-xl text-sm leading-7 text-soft-white/85 sm:text-base">Private luxury tours & chauffeur experiences across the Western Cape.</p>
         <div className="reveal-up mt-9 flex flex-col gap-3 sm:flex-row">
           <Button onClick={() => document.getElementById("experiences")?.scrollIntoView({ behavior: "smooth" })}>Explore our experiences <ArrowRight size={15}/></Button>
-          <Button tone="light" onClick={() => setEnquiryOpen(true)}>Book your journey</Button>
+          <BookLink tone="light">Book your journey</BookLink>
         </div>
         <div className="mt-12 flex items-center gap-3 text-[9px] uppercase tracking-[0.24em] text-soft-white/70"><ArrowDown size={15}/><span>Discover the Cape</span></div>
       </div>
@@ -119,7 +124,7 @@ function Index() {
 
     <section className="px-6 py-24 text-center lg:py-32"><div className="mx-auto max-w-4xl"><Quote className="mx-auto text-gold" size={34} strokeWidth={1}/><p className="mt-7 text-[10px] uppercase tracking-[0.28em] text-gold">Guest impressions</p><blockquote className="mx-auto mt-7 text-3xl leading-snug text-forest sm:text-5xl">“{currentQuote[0]}”</blockquote><p className="mt-7 text-xs font-semibold uppercase tracking-[0.16em]">{currentQuote[1]}</p><p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-charcoal/50">{currentQuote[2]}</p><div className="mt-8 flex justify-center gap-2"><button onClick={()=>setQuoteIndex((quoteIndex+quotes.length-1)%quotes.length)} aria-label="Previous testimonial" className="grid size-11 place-items-center border border-gold text-gold transition-colors hover:bg-gold hover:text-forest"><ChevronLeft size={17}/></button><button onClick={()=>setQuoteIndex((quoteIndex+1)%quotes.length)} aria-label="Next testimonial" className="grid size-11 place-items-center border border-gold text-gold transition-colors hover:bg-gold hover:text-forest"><ChevronRight size={17}/></button></div></div></section>
 
-    <section className="relative overflow-hidden px-6 py-28 text-center text-soft-white lg:py-40"><img src={capePointImage} alt="The spectacular Cape Peninsula coastline" width={1400} height={1050} loading="lazy" className="absolute inset-0 size-full object-cover"/><div className="absolute inset-0 bg-forest/80"/><div className="relative mx-auto max-w-3xl"><p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-gold">Your journey, your way</p><h2 className="mt-5 text-5xl leading-none sm:text-7xl">Let us create something <em className="font-normal">exceptional.</em></h2><p className="mx-auto mt-6 max-w-xl text-sm leading-7 text-soft-white/75">Tell us where you would like to go. We will take care of how you get there—and everything in between.</p><Button className="mt-9" onClick={()=>setEnquiryOpen(true)}>Begin your journey <ArrowRight size={15}/></Button></div></section>
+    <section className="relative overflow-hidden px-6 py-28 text-center text-soft-white lg:py-40"><img src={capePointImage} alt="The spectacular Cape Peninsula coastline" width={1400} height={1050} loading="lazy" className="absolute inset-0 size-full object-cover"/><div className="absolute inset-0 bg-forest/80"/><div className="relative mx-auto max-w-3xl"><p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-gold">Your journey, your way</p><h2 className="mt-5 text-5xl leading-none sm:text-7xl">Let us create something <em className="font-normal">exceptional.</em></h2><p className="mx-auto mt-6 max-w-xl text-sm leading-7 text-soft-white/75">Tell us where you would like to go. We will take care of how you get there—and everything in between.</p><BookLink className="mt-9">Begin your journey <ArrowRight size={15}/></BookLink></div></section>
 
     <footer className="bg-charcoal px-6 py-16 text-ivory lg:px-12">
       <div className="mx-auto max-w-[1344px]">
@@ -139,8 +144,8 @@ function Index() {
           </div>
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Get in touch</p>
-            <p className="mt-5 text-xs leading-6 text-ivory/50">Ready to plan your journey? Open the enquiry panel and we will personally curate your experience.</p>
-            <Button tone="outline" className="mt-5" onClick={() => setEnquiryOpen(true)}>Plan your journey</Button>
+            <p className="mt-5 text-xs leading-6 text-ivory/50">Ready to plan your journey? Send us your details and we will personally curate your experience.</p>
+            <BookLink tone="outline" className="mt-5">Plan your journey</BookLink>
           </div>
         </div>
         <div className="flex flex-col items-center justify-between gap-4 pt-8 sm:flex-row">
@@ -154,6 +159,5 @@ function Index() {
       </div>
     </footer>
 
-    {enquiryOpen && <div className="fixed inset-0 z-50 flex justify-end bg-charcoal/70" role="dialog" aria-modal="true" aria-label="Plan your journey"><button className="absolute inset-0 cursor-default" aria-label="Close enquiry" onClick={()=>setEnquiryOpen(false)}/><aside className="relative h-full w-full max-w-xl overflow-y-auto bg-ivory p-7 shadow-2xl sm:p-12"><button onClick={()=>setEnquiryOpen(false)} className="absolute right-6 top-6 grid size-10 place-items-center border border-charcoal/20" aria-label="Close"><X size={18}/></button>{sent ? <div className="flex min-h-[70vh] flex-col items-center justify-center text-center"><span className="grid size-16 place-items-center rounded-full border border-gold text-gold"><Check size={28}/></span><h2 className="mt-7 text-5xl text-forest">Thank you.</h2><p className="mt-4 max-w-sm text-sm leading-7 text-charcoal/65">Your journey request has been received. Our team will be in touch to shape the details with you.</p><Button className="mt-8" onClick={()=>{setSent(false);setEnquiryOpen(false)}}>Return to site</Button></div> : <><p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-gold">Private enquiry</p><h2 className="mt-4 text-5xl leading-none text-forest">Plan your journey</h2><p className="mt-5 text-sm leading-7 text-charcoal/60">Share a few details and we will personally curate your Western Cape experience.</p><form onSubmit={submit} className="mt-10 space-y-6">{[["Full name","text","Your name"],["Email address","email","you@example.com"],["Travel date","date",""]].map(([label,type,placeholder])=><label key={label} className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-charcoal/70">{label}<input required type={type} placeholder={placeholder} className="mt-2 h-12 w-full border-b border-charcoal/25 bg-transparent text-sm normal-case outline-none transition-colors focus:border-gold"/></label>)}<label className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-charcoal/70">Experience<select className="mt-2 h-12 w-full border-b border-charcoal/25 bg-transparent text-sm normal-case outline-none focus:border-gold"><option>Cape Winelands</option><option>Cape Point</option><option>Garden Route</option><option>Safari Experience</option><option>Executive Travel</option><option>Bespoke itinerary</option></select></label><label className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-charcoal/70">Tell us more<textarea rows={4} placeholder="Number of guests, places of interest, or anything we should know…" className="mt-2 w-full resize-none border-b border-charcoal/25 bg-transparent py-3 text-sm normal-case leading-6 outline-none focus:border-gold"/></label><Button type="submit" className="mt-2 w-full">Send journey request <ArrowRight size={15}/></Button></form></>}</aside></div>}
   </main>;
 }
