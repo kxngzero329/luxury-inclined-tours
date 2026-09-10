@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { ArrowDown, ArrowRight, Check, ChevronLeft, ChevronRight, Menu, Quote, ShieldCheck, Sparkles, Plane, X } from "lucide-react";
-import { useEffect, useState, type ButtonHTMLAttributes, type FormEvent } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowDown, ArrowRight, ChevronLeft, ChevronRight, Menu, Quote, ShieldCheck, Sparkles, Plane, X } from "lucide-react";
+import { useEffect, useState, type ButtonHTMLAttributes } from "react";
 import heroImage from "../assets/luxury-vineyard-hero.jpg";
 import winelandsImage from "../assets/cape-winelands.jpg";
 import capePointImage from "../assets/cape-point.jpg";
