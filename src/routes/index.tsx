@@ -131,11 +131,11 @@ function Index() {
           </div>
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Explore</p>
-            <div className="mt-5 flex flex-col gap-3">{"Experiences","Destinations","Our Story","Fleet"].map(item => <button key={item} onClick={top} className="text-left text-xs uppercase tracking-[0.12em] text-ivory/70 transition-colors hover:text-gold">{item}</button>)}</div>
+            <div className="mt-5 flex flex-col gap-3">{["Experiences","Destinations","Our Story","Fleet"].map(item => <button key={item} onClick={top} className="text-left text-xs uppercase tracking-[0.12em] text-ivory/70 transition-colors hover:text-gold">{item}</button>)}</div>
           </div>
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Experiences</p>
-            <div className="mt-5 flex flex-col gap-3">{"Cape Winelands","Cape Point","Garden Route","Safari","Executive Travel"].map(item => <button key={item} onClick={top} className="text-left text-xs uppercase tracking-[0.12em] text-ivory/70 transition-colors hover:text-gold">{item}</button>)}</div>
+            <div className="mt-5 flex flex-col gap-3">{["Cape Winelands","Cape Point","Garden Route","Safari","Executive Travel"].map(item => <button key={item} onClick={top} className="text-left text-xs uppercase tracking-[0.12em] text-ivory/70 transition-colors hover:text-gold">{item}</button>)}</div>
           </div>
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Get in touch</p>
