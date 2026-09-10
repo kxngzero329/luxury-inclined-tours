@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowDown, ArrowRight, Check, ChevronLeft, ChevronRight, Menu, Plane, Quote, ShieldCheck, Sparkles, X } from "lucide-react";
-import { useState, type ButtonHTMLAttributes, type FormEvent } from "react";
+import { ArrowDown, ArrowRight, Check, ChevronLeft, ChevronRight, Menu, Quote, ShieldCheck, Sparkles, Plane, X } from "lucide-react";
+import { useEffect, useState, type ButtonHTMLAttributes, type FormEvent } from "react";
 import heroImage from "../assets/luxury-vineyard-hero.jpg";
 import winelandsImage from "../assets/cape-winelands.jpg";
 import capePointImage from "../assets/cape-point.jpg";
@@ -39,6 +39,15 @@ function Index() {
   const [enquiryOpen, setEnquiryOpen] = useState(false);
   const [sent, setSent] = useState(false);
   const [quoteIndex, setQuoteIndex] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   const top = () => { window.scrollTo({ top: 0, behavior: "smooth" }); setMenuOpen(false); };
   const submit = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); setSent(true); };
   const quotes = [
@@ -48,7 +57,7 @@ function Index() {
   const currentQuote = quotes[quoteIndex] ?? ["A beautifully considered Western Cape journey.", "Private Guest", "International"];
 
   return <main className="bg-ivory text-charcoal">
-    <header className="absolute inset-x-0 top-0 z-40 border-b border-soft-white/20 text-soft-white">
+    <header className={`fixed inset-x-0 top-0 z-40 border-b border-soft-white/20 text-soft-white transition-colors duration-300 ${scrolled ? "bg-forest/95 backdrop-blur-sm" : "bg-transparent"}`}>
       <div className="mx-auto flex h-24 max-w-[1440px] items-center justify-between px-6 lg:px-12">
         <button onClick={top} className="text-left" aria-label="Luxury-Inclined Tours, back to top">
           <span className="block font-display text-[27px] leading-none">Luxury-Inclined</span>
@@ -106,13 +115,44 @@ function Index() {
 
     <section className="px-6 py-24 lg:px-12 lg:py-32"><div className="mx-auto max-w-[1344px]"><div className="grid gap-12 lg:grid-cols-2"><div><p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.28em] text-gold">Why travel with us</p><h2 className="text-5xl leading-none text-forest sm:text-6xl">Quiet luxury,<br/>thoughtfully delivered.</h2></div><div className="grid gap-px bg-stone sm:grid-cols-2">{[[ShieldCheck,"Professional, always","Impeccable presentation, discretion and absolute reliability."],[Sparkles,"Designed around you","No fixed formula—each day moves entirely at your pace."],[Plane,"Seamless from arrival","Airport, hotel and destination transfers coordinated with care."],[Check,"Local knowledge","The Western Cape's celebrated places and quieter discoveries."]].map(([Icon,title,copy]) => { const I = Icon as typeof Check; return <div key={title as string} className="bg-ivory p-7"><I size={24} strokeWidth={1.25} className="text-gold"/><h3 className="mt-8 text-2xl text-forest">{title as string}</h3><p className="mt-3 text-xs leading-6 text-charcoal/60">{copy as string}</p></div>})}</div></div></div></section>
 
-    <section className="grid bg-charcoal text-ivory lg:grid-cols-2"><div className="min-h-[520px]"><img src={heroImage} alt="Luxury Mercedes V-Class in the Cape Winelands" width={1920} height={1080} loading="lazy" className="size-full object-cover"/></div><div className="flex items-center px-6 py-20 lg:px-20"><div><p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.28em] text-gold">The luxury fleet</p><h2 className="text-5xl leading-none sm:text-6xl">Comfort in<br/><em className="font-normal text-gold">every detail.</em></h2><p className="mt-7 max-w-lg text-sm leading-7 text-ivory/65">Travel in immaculate, climate-controlled vehicles selected for generous space, quiet comfort and understated presence.</p><ul className="mt-8 grid gap-4 text-[10px] uppercase tracking-[0.15em] sm:grid-cols-2">{["Mercedes-Benz V-Class","Executive sedans","Complimentary water","On-board connectivity"].map(x=><li className="flex items-center gap-3" key={x}><span className="h-px w-5 bg-gold"/>{x}</li>)}</ul></div></div></section>
+    <section className="grid bg-charcoal text-ivory lg:grid-cols-2"><div className="hidden min-h-[520px] lg:block"><img src={heroImage} alt="Luxury Mercedes V-Class in the Cape Winelands" width={1920} height={1080} loading="lazy" className="size-full object-cover"/></div><div className="flex items-center px-6 py-20 lg:px-20"><div><p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.28em] text-gold">The luxury fleet</p><h2 className="text-5xl leading-none sm:text-6xl">Comfort in<br/><em className="font-normal text-gold">every detail.</em></h2><p className="mt-7 max-w-lg text-sm leading-7 text-ivory/65">Travel in immaculate, climate-controlled vehicles selected for generous space, quiet comfort and understated presence.</p><ul className="mt-8 grid gap-4 text-[10px] uppercase tracking-[0.15em] sm:grid-cols-2">{"Mercedes-Benz V-Class","Executive sedans","Complimentary water","On-board connectivity"].map(x=><li className="flex items-center gap-3" key={x}><span className="h-px w-5 bg-gold"/>{x}</li>)}</ul></div></div></section>
 
     <section className="px-6 py-24 text-center lg:py-32"><div className="mx-auto max-w-4xl"><Quote className="mx-auto text-gold" size={34} strokeWidth={1}/><p className="mt-7 text-[10px] uppercase tracking-[0.28em] text-gold">Guest impressions</p><blockquote className="mx-auto mt-7 text-3xl leading-snug text-forest sm:text-5xl">“{currentQuote[0]}”</blockquote><p className="mt-7 text-xs font-semibold uppercase tracking-[0.16em]">{currentQuote[1]}</p><p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-charcoal/50">{currentQuote[2]}</p><div className="mt-8 flex justify-center gap-2"><button onClick={()=>setQuoteIndex((quoteIndex+quotes.length-1)%quotes.length)} aria-label="Previous testimonial" className="grid size-11 place-items-center border border-gold text-gold transition-colors hover:bg-gold hover:text-forest"><ChevronLeft size={17}/></button><button onClick={()=>setQuoteIndex((quoteIndex+1)%quotes.length)} aria-label="Next testimonial" className="grid size-11 place-items-center border border-gold text-gold transition-colors hover:bg-gold hover:text-forest"><ChevronRight size={17}/></button></div></div></section>
 
     <section className="relative overflow-hidden px-6 py-28 text-center text-soft-white lg:py-40"><img src={capePointImage} alt="The spectacular Cape Peninsula coastline" width={1400} height={1050} loading="lazy" className="absolute inset-0 size-full object-cover"/><div className="absolute inset-0 bg-forest/80"/><div className="relative mx-auto max-w-3xl"><p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-gold">Your journey, your way</p><h2 className="mt-5 text-5xl leading-none sm:text-7xl">Let us create something <em className="font-normal">exceptional.</em></h2><p className="mx-auto mt-6 max-w-xl text-sm leading-7 text-soft-white/75">Tell us where you would like to go. We will take care of how you get there—and everything in between.</p><Button className="mt-9" onClick={()=>setEnquiryOpen(true)}>Begin your journey <ArrowRight size={15}/></Button></div></section>
 
-    <footer className="bg-charcoal px-6 py-14 text-ivory lg:px-12"><div className="mx-auto max-w-[1344px]"><div className="flex flex-col justify-between gap-10 border-b border-ivory/15 pb-12 md:flex-row"><div><p className="font-display text-3xl">Luxury-Inclined</p><p className="mt-1 text-[9px] uppercase tracking-[0.32em] text-gold">Tours · Western Cape</p><p className="mt-5 max-w-sm text-xs leading-6 text-ivory/50">Private tours, seamless transfers and memorable journeys throughout the Western Cape.</p></div><div className="flex flex-wrap gap-x-10 gap-y-4">{["Experiences","Destinations","Our Story","Fleet"].map(item=><button onClick={top} key={item} className="text-[10px] uppercase tracking-[0.18em] hover:text-gold">{item}</button>)}</div></div><div className="flex flex-col justify-between gap-3 pt-7 text-[9px] uppercase tracking-[0.16em] text-ivory/40 sm:flex-row"><span>© 2026 Luxury-Inclined Tours</span><span>Western Cape, South Africa</span></div></div></footer>
+    <footer className="bg-charcoal px-6 py-16 text-ivory lg:px-12">
+      <div className="mx-auto max-w-[1344px]">
+        <div className="grid gap-12 border-b border-ivory/15 pb-14 md:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <p className="font-display text-3xl">Luxury-Inclined</p>
+            <p className="mt-1 text-[9px] uppercase tracking-[0.32em] text-gold">Tours · Western Cape</p>
+            <p className="mt-5 max-w-sm text-xs leading-6 text-ivory/50">Private tours, seamless transfers and memorable journeys throughout the Western Cape.</p>
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Explore</p>
+            <div className="mt-5 flex flex-col gap-3">{"Experiences","Destinations","Our Story","Fleet"].map(item => <button key={item} onClick={top} className="text-left text-xs uppercase tracking-[0.12em] text-ivory/70 transition-colors hover:text-gold">{item}</button>)}</div>
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Experiences</p>
+            <div className="mt-5 flex flex-col gap-3">{"Cape Winelands","Cape Point","Garden Route","Safari","Executive Travel"].map(item => <button key={item} onClick={top} className="text-left text-xs uppercase tracking-[0.12em] text-ivory/70 transition-colors hover:text-gold">{item}</button>)}</div>
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Get in touch</p>
+            <p className="mt-5 text-xs leading-6 text-ivory/50">Ready to plan your journey? Open the enquiry panel and we will personally curate your experience.</p>
+            <Button tone="outline" className="mt-5" onClick={() => setEnquiryOpen(true)}>Plan your journey</Button>
+          </div>
+        </div>
+        <div className="flex flex-col items-center justify-between gap-4 pt-8 sm:flex-row">
+          <div className="text-[9px] uppercase tracking-[0.16em] text-ivory/40">
+            <span>© 2026 Luxury-Inclined Tours</span>
+            <span className="mx-3 hidden sm:inline">·</span>
+            <span className="block sm:inline">Western Cape, South Africa</span>
+          </div>
+          <button onClick={top} className="text-[9px] uppercase tracking-[0.16em] text-ivory/40 transition-colors hover:text-gold">Back to top</button>
+        </div>
+      </div>
+    </footer>
 
     {enquiryOpen && <div className="fixed inset-0 z-50 flex justify-end bg-charcoal/70" role="dialog" aria-modal="true" aria-label="Plan your journey"><button className="absolute inset-0 cursor-default" aria-label="Close enquiry" onClick={()=>setEnquiryOpen(false)}/><aside className="relative h-full w-full max-w-xl overflow-y-auto bg-ivory p-7 shadow-2xl sm:p-12"><button onClick={()=>setEnquiryOpen(false)} className="absolute right-6 top-6 grid size-10 place-items-center border border-charcoal/20" aria-label="Close"><X size={18}/></button>{sent ? <div className="flex min-h-[70vh] flex-col items-center justify-center text-center"><span className="grid size-16 place-items-center rounded-full border border-gold text-gold"><Check size={28}/></span><h2 className="mt-7 text-5xl text-forest">Thank you.</h2><p className="mt-4 max-w-sm text-sm leading-7 text-charcoal/65">Your journey request has been received. Our team will be in touch to shape the details with you.</p><Button className="mt-8" onClick={()=>{setSent(false);setEnquiryOpen(false)}}>Return to site</Button></div> : <><p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-gold">Private enquiry</p><h2 className="mt-4 text-5xl leading-none text-forest">Plan your journey</h2><p className="mt-5 text-sm leading-7 text-charcoal/60">Share a few details and we will personally curate your Western Cape experience.</p><form onSubmit={submit} className="mt-10 space-y-6">{[["Full name","text","Your name"],["Email address","email","you@example.com"],["Travel date","date",""]].map(([label,type,placeholder])=><label key={label} className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-charcoal/70">{label}<input required type={type} placeholder={placeholder} className="mt-2 h-12 w-full border-b border-charcoal/25 bg-transparent text-sm normal-case outline-none transition-colors focus:border-gold"/></label>)}<label className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-charcoal/70">Experience<select className="mt-2 h-12 w-full border-b border-charcoal/25 bg-transparent text-sm normal-case outline-none focus:border-gold"><option>Cape Winelands</option><option>Cape Point</option><option>Garden Route</option><option>Safari Experience</option><option>Executive Travel</option><option>Bespoke itinerary</option></select></label><label className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-charcoal/70">Tell us more<textarea rows={4} placeholder="Number of guests, places of interest, or anything we should know…" className="mt-2 w-full resize-none border-b border-charcoal/25 bg-transparent py-3 text-sm normal-case leading-6 outline-none focus:border-gold"/></label><Button type="submit" className="mt-2 w-full">Send journey request <ArrowRight size={15}/></Button></form></>}</aside></div>}
   </main>;
