@@ -20,10 +20,19 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { tone?: "gold" | "outline" | "light" };
+type Tone = "gold" | "outline" | "light";
+const btnBase = "inline-flex min-h-12 items-center justify-center gap-3 rounded-sm border px-6 text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors duration-300";
+const btnTones: Record<Tone, string> = {
+  gold: "border-gold bg-gold text-forest hover:bg-ivory hover:border-ivory",
+  light: "border-ivory text-ivory hover:bg-ivory hover:text-forest",
+  outline: "border-gold text-gold hover:bg-gold hover:text-forest",
+};
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { tone?: Tone };
 function Button({ tone = "gold", className = "", ...props }: ButtonProps) {
-  const styles = tone === "gold" ? "border-gold bg-gold text-forest hover:bg-ivory hover:border-ivory" : tone === "light" ? "border-ivory text-ivory hover:bg-ivory hover:text-forest" : "border-gold text-gold hover:bg-gold hover:text-forest";
-  return <button className={`inline-flex min-h-12 items-center justify-center gap-3 rounded-sm border px-6 text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors duration-300 ${styles} ${className}`} {...props} />;
+  return <button className={`${btnBase} ${btnTones[tone]} ${className}`} {...props} />;
+}
+function BookLink({ tone = "gold", className = "", children }: { tone?: Tone; className?: string; children: React.ReactNode }) {
+  return <Link to="/booking" className={`${btnBase} ${btnTones[tone]} ${className}`}>{children}</Link>;
 }
 
 const experiences = [
