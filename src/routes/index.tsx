@@ -45,8 +45,6 @@ const experiences = [
 
 function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [enquiryOpen, setEnquiryOpen] = useState(false);
-  const [sent, setSent] = useState(false);
   const [quoteIndex, setQuoteIndex] = useState(0);
   const [scrolled, setScrolled] = useState(false);
 
