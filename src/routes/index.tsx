@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowDown, ArrowRight, ChevronLeft, ChevronRight, Menu, Quote, ShieldCheck, Sparkles, Plane, X } from "lucide-react";
+import { ArrowDown, ArrowRight, Check, ChevronLeft, ChevronRight, Menu, Quote, ShieldCheck, Sparkles, Plane, X } from "lucide-react";
 import { useEffect, useState, type ButtonHTMLAttributes } from "react";
 import heroImage from "../assets/luxury-vineyard-hero.jpg";
 import winelandsImage from "../assets/cape-winelands.jpg";
@@ -83,7 +83,6 @@ function Index() {
       <div className="absolute inset-0 bg-gradient-to-r from-charcoal/80 via-charcoal/40 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-transparent to-charcoal/25" />
       <div className="relative mx-auto w-full max-w-[1440px] px-6 pb-16 pt-40 lg:px-12 lg:pb-20">
-        <p className="reveal-up mb-5 text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">Private travel · Western Cape</p>
         <h1 className="reveal-up max-w-4xl text-6xl font-medium leading-[0.88] sm:text-7xl lg:text-[108px]">Travel Beyond<br/><em className="font-normal">Ordinary.</em></h1>
         <p className="reveal-up mt-7 max-w-xl text-sm leading-7 text-soft-white/85 sm:text-base">Private luxury tours & chauffeur experiences across the Western Cape.</p>
         <div className="reveal-up mt-9 flex flex-col gap-3 sm:flex-row">
